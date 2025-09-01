@@ -97,7 +97,7 @@
     <div class="bg-gray-800 p-8 rounded-2xl shadow-xl mt-10 w-full max-w-5xl">
       <h2 class="text-xl font-bold mb-4">Output</h2>
       <div>
-        <h3 class="text-sm font-semibold text-gray-300 mb-1">GitHub Oneliner (Markdown)</h3>
+        <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Embed (for README)</h3>
         <pre id="output-github" class="bg-gray-900 p-3 rounded-lg text-green-400 text-sm overflow-x-auto">...</pre>
       </div>
     </div>
@@ -126,7 +126,7 @@
         const status = document.getElementById("status").value || "OPEN";
         const date = document.getElementById("date").value || "Today";
 
-        // Update badge
+        // Update badge preview
         badgeTitle.textContent = title;
         badgeRepo.textContent = repo;
         badgeNumber.textContent = number;
@@ -134,8 +134,11 @@
         badgeStatus.className = `px-3 py-1 rounded-md text-sm font-bold text-white shadow-md whitespace-nowrap ${statusColors[status]}`;
         badgeDate.textContent = date;
 
-        // GitHub Markdown oneliner
-        outputGithub.textContent = `[${title} (${number})](https://github.com/${repo}/pull/${number.replace("#", "")})`;
+        // Build Vercel badge URL
+        const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
+
+        // Markdown embed
+        outputGithub.textContent = `![PR Badge](${badgeUrl})`;
       });
     </script>
   </body>
