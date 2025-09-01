@@ -1,15 +1,18 @@
-// api/badge.js
-function escapeXml(unsafe) {
-  return unsafe.replace(/[<>&'"]/g, c => ({
-    '<': '&lt;',
-    '>': '&gt;',
-    '&': '&amp;',
-    "'": '&apos;',
-    '"': '&quot;',
-  }[c]));
-}
+import express from "express";
+import satori from "satori";
+import { Resvg } from "@resvg/resvg-js";
 
-export default function handler(req, res) {
+const app = express();
+const PORT = 3000;
+
+// Status colors
+const statusColors = {
+  OPEN: "#22c55e",   // green-500
+  MERGED: "#a855f7", // purple-500
+  CLOSED: "#ef4444", // red-500
+};
+
+app.get("/api/badge", async (req, res) => {
   const {
     title = "Default PR Title",
     repo = "owner/repo",
@@ -18,51 +21,138 @@ export default function handler(req, res) {
     date = "Today",
   } = req.query;
 
-  const statusColors = {
-    OPEN: "#22c55e",
-    MERGED: "#a855f7",
-    CLOSED: "#ef4444",
-  };
-  const statusColor = statusColors[status.toUpperCase()] || "#22c55e";
+  // SVG dimensions
+  const height = 70;
+  const padding = 20;
+  const pillPaddingX = 12;
+  const pillPaddingY = 4;
 
-  const safeTitle = escapeXml(title);
-  const safeRepo = escapeXml(repo);
-  const safeNumber = escapeXml(number);
-  const safeStatus = escapeXml(status.toUpperCase());
-  const safeDate = escapeXml(date);
+  // Create SVG with satori
+  const svg = await satori(
+    {
+      type: "div",
+      props: {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "linear-gradient(to right, #111827, #374151)", // Tailwind bg-gradient
+          border: "1px solid #4b5563",
+          borderRadius: "12px",
+          padding: `${padding}px`,
+          fontFamily: "Inter, system-ui, sans-serif",
+          color: "white",
+          width: "auto",
+          height: `${height}px`,
+        },
+        children: [
+          // Left side: title + repo
+          {
+            type: "div",
+            props: {
+              style: {
+                display: "flex",
+                flexDirection: "column",
+                minWidth: "280px",
+                overflow: "hidden",
+              },
+              children: [
+                {
+                  type: "div",
+                  props: {
+                    style: {
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    },
+                    children: title,
+                  },
+                },
+                {
+                  type: "div",
+                  props: {
+                    style: {
+                      fontSize: "12px",
+                      color: "#d1d5db", // gray-300
+                    },
+                    children: repo,
+                  },
+                },
+              ],
+            },
+          },
 
-  const totalWidth = 420;
+          // Right side: number + status + date
+          {
+            type: "div",
+            props: {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+              },
+              children: [
+                {
+                  type: "div",
+                  props: {
+                    style: {
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      color: "#e5e7eb", // gray-200
+                      whiteSpace: "nowrap",
+                    },
+                    children: number,
+                  },
+                },
+                {
+                  type: "div",
+                  props: {
+                    style: {
+                      backgroundColor: statusColors[status] || "#22c55e",
+                      borderRadius: "9999px",
+                      padding: `${pillPaddingY}px ${pillPaddingX}px`,
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      color: "white",
+                      whiteSpace: "nowrap",
+                    },
+                    children: status,
+                  },
+                },
+                {
+                  type: "div",
+                  props: {
+                    style: {
+                      backgroundColor: "#374151", // gray-700
+                      borderRadius: "9999px",
+                      padding: `${pillPaddingY}px ${pillPaddingX}px`,
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: "#d1d5db", // gray-300
+                      whiteSpace: "nowrap",
+                    },
+                    children: date,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    { width: 600, height } // initial canvas size, auto expands
+  );
 
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="80" role="img">
-      <rect width="${totalWidth}" height="80" rx="16" fill="url(#bg-gradient)" stroke="#4b5563" stroke-width="1.5"/>
-      <defs>
-        <linearGradient id="bg-gradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#111827"/>
-          <stop offset="100%" stop-color="#374151"/>
-        </linearGradient>
-      </defs>
+  // Render final PNG
+  const resvg = new Resvg(svg);
+  const pngData = resvg.render().asPng();
 
-      <!-- Title -->
-      <text x="20" y="32" fill="#fff" font-size="14" font-weight="600">${safeTitle}</text>
+  res.setHeader("Content-Type", "image/png");
+  res.send(pngData);
+});
 
-      <!-- Repo -->
-      <text x="20" y="54" fill="#d1d5db" font-size="12">${safeRepo}</text>
-
-      <!-- PR Number -->
-      <text x="${totalWidth - 220}" y="32" fill="#e5e7eb" font-size="14" font-weight="700">${safeNumber}</text>
-
-      <!-- Status pill -->
-      <rect x="${totalWidth - 200}" y="42" rx="6" ry="6" width="80" height="24" fill="${statusColor}"/>
-      <text x="${totalWidth - 160}" y="59" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">${safeStatus}</text>
-
-      <!-- Date pill -->
-      <rect x="${totalWidth - 110}" y="42" rx="6" ry="6" width="80" height="24" fill="#1f2937"/>
-      <text x="${totalWidth - 70}" y="59" text-anchor="middle" fill="#d1d5db" font-size="12" font-weight="600">${safeDate}</text>
-    </svg>
-  `;
-
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.status(200).send(svg);
-}
+app.listen(PORT, () => {
+  console.log(`Badge generator running on http://localhost:${PORT}`);
+});
