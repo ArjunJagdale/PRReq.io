@@ -97,7 +97,7 @@
     <div class="bg-gray-800 p-8 rounded-2xl shadow-xl mt-10 w-full max-w-5xl">
       <h2 class="text-xl font-bold mb-4">Output</h2>
       <div>
-        <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Embed (for README)</h3>
+        <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Badge Embed</h3>
         <pre id="output-github" class="bg-gray-900 p-3 rounded-lg text-green-400 text-sm overflow-x-auto">...</pre>
       </div>
     </div>
@@ -134,11 +134,11 @@
         badgeStatus.className = `px-3 py-1 rounded-md text-sm font-bold text-white shadow-md whitespace-nowrap ${statusColors[status]}`;
         badgeDate.textContent = date;
 
-        // Build Vercel badge URL
+        // Build API badge URL
         const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
 
-        // Markdown embed
-        outputGithub.textContent = `![PR Badge](${badgeUrl})`;
+        // Markdown embed code
+        outputGithub.textContent = `![${title} ${number}](${badgeUrl})`;
       });
     </script>
   </body>
