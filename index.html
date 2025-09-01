@@ -137,8 +137,12 @@
         // Build API badge URL
         const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
 
-        // Markdown embed code
-        outputGithub.textContent = `![${title} ${number}](${badgeUrl})`;
+        // GitHub PR link (strip "#" from number)
+        const prNumberOnly = number.replace("#", "");
+        const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
+
+        // Markd own embed code (clickable)
+        outputGithub.textContent = `[![${title} ${number}](${badgeUrl})](${prLink})`;
       });
     </script>
   </body>
