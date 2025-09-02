@@ -20,11 +20,8 @@ app.get("/api/badge", async (req, res) => {
     date = "Today",
   } = req.query;
 
-  // SVG height
-  const height = 70;
-  const padding = 20;
-  const pillPaddingX = 12;
-  const pillPaddingY = 4;
+  const height = 28; // badge height
+  const fontSize = 13;
 
   // Generate SVG with satori
   const svg = await satori(
@@ -34,117 +31,67 @@ app.get("/api/badge", async (req, res) => {
         style: {
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          background: "linear-gradient(to right, #111827, #374151)", // gradient
-          border: "1px solid #4b5563",
-          borderRadius: "12px",
-          padding: `${padding}px`,
           fontFamily: "Inter, system-ui, sans-serif",
-          color: "white",
-          width: "auto",
+          fontSize: `${fontSize}px`,
           height: `${height}px`,
+          color: "#fff",
         },
         children: [
-          // Left side: title + repo
+          // Left side (title + repo + number)
           {
             type: "div",
             props: {
               style: {
+                backgroundColor: "#374151",
+                padding: "0 10px",
+                borderTopLeftRadius: "6px",
+                borderBottomLeftRadius: "6px",
                 display: "flex",
-                flexDirection: "column",
-                minWidth: "280px",
-                overflow: "hidden",
+                alignItems: "center",
+                gap: "6px",
+                whiteSpace: "nowrap",
               },
               children: [
-                {
-                  type: "div",
-                  props: {
-                    style: {
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    },
-                    children: title,
-                  },
-                },
-                {
-                  type: "div",
-                  props: {
-                    style: {
-                      fontSize: "12px",
-                      color: "#d1d5db", // gray-300
-                    },
-                    children: repo,
-                  },
-                },
+                `${title}`,
+                { type: "span", props: { style: { color: "#9ca3af" }, children: repo } },
+                number,
               ],
             },
           },
-
-          // Right side: number + status + date
+          // Status
           {
             type: "div",
             props: {
               style: {
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
+                backgroundColor: statusColors[status] || "#22c55e",
+                padding: "0 10px",
+                fontWeight: 700,
+                whiteSpace: "nowrap",
               },
-              children: [
-                {
-                  type: "div",
-                  props: {
-                    style: {
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#e5e7eb",
-                      whiteSpace: "nowrap",
-                    },
-                    children: number,
-                  },
-                },
-                {
-                  type: "div",
-                  props: {
-                    style: {
-                      backgroundColor: statusColors[status] || "#22c55e",
-                      borderRadius: "9999px",
-                      padding: `${pillPaddingY}px ${pillPaddingX}px`,
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      color: "white",
-                      whiteSpace: "nowrap",
-                    },
-                    children: status,
-                  },
-                },
-                {
-                  type: "div",
-                  props: {
-                    style: {
-                      backgroundColor: "#374151",
-                      borderRadius: "9999px",
-                      padding: `${pillPaddingY}px ${pillPaddingX}px`,
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      color: "#d1d5db",
-                      whiteSpace: "nowrap",
-                    },
-                    children: date,
-                  },
-                },
-              ],
+              children: status,
+            },
+          },
+          // Date
+          {
+            type: "div",
+            props: {
+              style: {
+                backgroundColor: "#111827",
+                padding: "0 10px",
+                borderTopRightRadius: "6px",
+                borderBottomRightRadius: "6px",
+                color: "#9ca3af",
+                whiteSpace: "nowrap",
+              },
+              children: date,
             },
           },
         ],
       },
     },
-    { width: 600, height }
+    { width: 450, height }
   );
 
-  // Send raw SVG
   res.setHeader("Content-Type", "image/svg+xml");
   res.send(svg);
 });
