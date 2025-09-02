@@ -1,6 +1,5 @@
 import express from "express";
 import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
 
 const app = express();
 const PORT = 3000;
@@ -21,13 +20,13 @@ app.get("/api/badge", async (req, res) => {
     date = "Today",
   } = req.query;
 
-  // SVG dimensions
+  // SVG height
   const height = 70;
   const padding = 20;
   const pillPaddingX = 12;
   const pillPaddingY = 4;
 
-  // Create SVG with satori
+  // Generate SVG with satori
   const svg = await satori(
     {
       type: "div",
@@ -36,7 +35,7 @@ app.get("/api/badge", async (req, res) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "linear-gradient(to right, #111827, #374151)", // Tailwind bg-gradient
+          background: "linear-gradient(to right, #111827, #374151)", // gradient
           border: "1px solid #4b5563",
           borderRadius: "12px",
           padding: `${padding}px`,
@@ -100,7 +99,7 @@ app.get("/api/badge", async (req, res) => {
                     style: {
                       fontSize: "13px",
                       fontWeight: 600,
-                      color: "#e5e7eb", // gray-200
+                      color: "#e5e7eb",
                       whiteSpace: "nowrap",
                     },
                     children: number,
@@ -125,12 +124,12 @@ app.get("/api/badge", async (req, res) => {
                   type: "div",
                   props: {
                     style: {
-                      backgroundColor: "#374151", // gray-700
+                      backgroundColor: "#374151",
                       borderRadius: "9999px",
                       padding: `${pillPaddingY}px ${pillPaddingX}px`,
                       fontSize: "12px",
                       fontWeight: 500,
-                      color: "#d1d5db", // gray-300
+                      color: "#d1d5db",
                       whiteSpace: "nowrap",
                     },
                     children: date,
@@ -142,15 +141,12 @@ app.get("/api/badge", async (req, res) => {
         ],
       },
     },
-    { width: 600, height } // initial canvas size, auto expands
+    { width: 600, height }
   );
 
-  // Render final PNG
-  const resvg = new Resvg(svg);
-  const pngData = resvg.render().asPng();
-
-  res.setHeader("Content-Type", "image/png");
-  res.send(pngData);
+  // Send raw SVG
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.send(svg);
 });
 
 app.listen(PORT, () => {
