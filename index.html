@@ -91,4 +91,12 @@
 
         // Build PR link
         const prNumberOnly = number.replace("#", "");
-        const prLink = `https://github.com/
+        const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
+
+        // Markdown embed code (absolute URL for GitHub README)
+        const badgeAbsoluteUrl = `${PROD_DOMAIN}${badgeUrl}`;
+        outputGithub.textContent = `[![${title} ${number}](${badgeAbsoluteUrl})](${prLink})`;
+      });
+    </script>
+  </body>
+</html>
