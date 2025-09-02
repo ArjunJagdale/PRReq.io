@@ -82,21 +82,21 @@
 
         <!-- Preview Section -->
         <div class="flex flex-col items-center justify-center space-y-8">
-          <div class="text-center w-full">
+          <div class="text-center">
             <h3 class="text-2xl font-bold mb-6 flex items-center justify-center">
               <span class="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
               Live Preview
             </h3>
-            <!-- Responsive preview container that fits the badge -->
-            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 min-h-[120px] flex items-center justify-center w-full">
+            <!-- Flexible preview container that expands with badge -->
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 min-h-[120px] flex items-center justify-center overflow-x-auto">
               <img id="badge-preview" 
-                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 max-w-full h-auto" 
+                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105" 
                    src="/api/badge?title=Add%20amazing%20new%20feature&repo=owner/repo&number=%231234&status=OPEN&date=Jul%2028&theme=modern" 
                    alt="PR Badge Preview"
-                   style="height: auto; max-height: 80px;"/>
+                   style="height: 60px; min-width: 400px;"/>
             </div>
             <!-- Preview size info -->
-            <p class="text-xs text-gray-400 mt-2">Badge automatically resizes to fit preview</p>
+            <p class="text-xs text-gray-400 mt-2">Scroll horizontally for long badges</p>
           </div>
 
           <!-- Quick Actions -->
