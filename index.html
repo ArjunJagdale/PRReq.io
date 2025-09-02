@@ -18,25 +18,25 @@
           <div>
             <label for="title" class="block text-sm font-medium mb-1">PR Title</label>
             <input id="title" type="text" maxlength="120" placeholder="Enter PR Title"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
+              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500"/>
           </div>
 
           <div>
             <label for="repo" class="block text-sm font-medium mb-1">Repository</label>
             <input id="repo" type="text" maxlength="50" placeholder="owner/repo"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
+              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500"/>
           </div>
 
           <div>
             <label for="number" class="block text-sm font-medium mb-1">PR Number</label>
             <input id="number" type="text" maxlength="15" placeholder="#1234"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
+              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500"/>
           </div>
 
           <div>
             <label for="status" class="block text-sm font-medium mb-1">Status</label>
             <select id="status"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none">
+              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500 appearance-none">
               <option>OPEN</option>
               <option>MERGED</option>
               <option>CLOSED</option>
@@ -46,53 +46,32 @@
           <div>
             <label for="date" class="block text-sm font-medium mb-1">Date</label>
             <input id="date" type="text" maxlength="20" placeholder="Jul 1"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
+              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500"/>
           </div>
         </form>
       </div>
 
       <!-- Badge Preview -->
-      <div class="flex items-center justify-center w-full">
-        <div id="badge-container" class="flex text-sm font-medium leading-none rounded-lg overflow-hidden shadow-md">
-          <span id="badge-left" class="px-3 py-1 bg-gray-700 text-white flex items-center gap-2">
-            <span id="badge-title">Default PR Title</span>
-            <span id="badge-repo" class="text-gray-400">owner/repo</span>
-            <span id="badge-number">#0000</span>
-          </span>
-          <span id="badge-status" class="px-3 py-1 font-bold bg-green-500 text-white">
-            OPEN
-          </span>
-          <span id="badge-date" class="px-3 py-1 bg-gray-900 text-gray-400">
-            Today
-          </span>
-        </div>
+      <div class="flex flex-col items-center justify-center w-full">
+        <h3 class="text-lg font-semibold mb-3">Live Preview</h3>
+        <img id="badge-preview" class="rounded-lg shadow-lg border border-gray-700 bg-gray-900" 
+             src="/api/badge?title=Default%20PR%20Title&repo=owner/repo&number=%230000&status=OPEN&date=Today" 
+             alt="PR Badge"/>
       </div>
     </div>
 
     <!-- Output Section -->
     <div class="bg-gray-800 p-8 rounded-2xl shadow-xl mt-10 w-full max-w-5xl">
       <h2 class="text-xl font-bold mb-4">Output</h2>
-      <div>
-        <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Badge Embed</h3>
-        <pre id="output-github" class="bg-gray-900 p-3 rounded-lg text-green-400 text-sm overflow-x-auto">...</pre>
-      </div>
+      <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Badge Embed</h3>
+      <pre id="output-github" class="bg-gray-900 p-3 rounded-lg text-green-400 text-sm overflow-x-auto">...</pre>
     </div>
 
     <!-- Script -->
     <script>
       const form = document.getElementById("badge-form");
-      const badgeTitle = document.getElementById("badge-title");
-      const badgeRepo = document.getElementById("badge-repo");
-      const badgeNumber = document.getElementById("badge-number");
-      const badgeStatus = document.getElementById("badge-status");
-      const badgeDate = document.getElementById("badge-date");
+      const badgePreview = document.getElementById("badge-preview");
       const outputGithub = document.getElementById("output-github");
-
-      const statusColors = {
-        OPEN: "bg-green-500",
-        MERGED: "bg-purple-500",
-        CLOSED: "bg-red-500"
-      };
 
       form.addEventListener("input", () => {
         const title = document.getElementById("title").value || "Default PR Title";
@@ -101,22 +80,17 @@
         const status = document.getElementById("status").value || "OPEN";
         const date = document.getElementById("date").value || "Today";
 
-        // Update badge preview
-        badgeTitle.textContent = title;
-        badgeRepo.textContent = repo;
-        badgeNumber.textContent = number;
-        badgeStatus.textContent = status;
-        badgeStatus.className = `px-3 py-1 font-bold text-white ${statusColors[status]}`;
-        badgeDate.textContent = date;
+        // Build badge API URL
+        const badgeUrl = `/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
 
-        // Build API badge URL
-        const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
+        // Update live preview
+        badgePreview.src = badgeUrl;
 
-        // GitHub PR link (strip "#" from number)
+        // Build PR link
         const prNumberOnly = number.replace("#", "");
         const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
 
-        // Markdown embed code (clickable)
+        // Markdown embed code
         outputGithub.textContent = `[![${title} ${number}](${badgeUrl})](${prLink})`;
       });
     </script>
