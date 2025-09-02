@@ -63,26 +63,26 @@ export default function handler(req, res) {
   const themeConfig = themes[theme] || themes.modern;
   const statusInfo = statusConfig[status] || statusConfig.OPEN;
 
-  // Constants
-  const height = 36;
-  const padding = 12;
-  const statusWidth = 100;
-  const dateWidth = 85;
-  const iconSize = 12;
+  // Constants for larger badge
+  const height = 40;
+  const padding = 16;
+  const statusWidth = 120;
+  const dateWidth = 100;
+  const iconSize = 14;
 
-  // Title logic with better truncation
-  const maxTitleLength = 80;
+  // Title logic with better truncation for larger badge
+  const maxTitleLength = 120;
   let safeTitle = title;
   if (title.length > maxTitleLength) {
     safeTitle = title.slice(0, maxTitleLength - 1) + "…";
   }
 
-  // Dynamic width calculation with better proportions
-  const charWidth = 7;
-  const baseWidth = 180;
-  const extraWidth = Math.min(safeTitle.length * charWidth, 350);
-  const leftWidth = Math.max(baseWidth + extraWidth, 250);
-  const totalWidth = leftWidth + statusWidth + dateWidth;
+  // Much wider badge calculation
+  const charWidth = 8;
+  const baseWidth = 400; // Much larger base width
+  const extraWidth = Math.min(safeTitle.length * charWidth, 600);
+  const leftWidth = Math.max(baseWidth + extraWidth, 500); // Minimum 500px for title area
+  const totalWidth = leftWidth + statusWidth + dateWidth; // This will be ~720-1220px
 
   // Create gradients and shadows based on theme
   const createGradient = (id, colors) => {
@@ -144,16 +144,16 @@ export default function handler(req, res) {
             fill="${themeConfig.gradient ? 'url(#titleGrad)' : themeConfig.titleBg}" 
             rx="${themeConfig.borderRadius}" ry="${themeConfig.borderRadius}"/>
 
-      <!-- PR Title with better typography -->
-      <text x="${padding}" y="16" fill="${themeConfig.titleColor}" 
-            font-size="13" font-weight="600" 
+      <!-- PR Title with larger, more prominent text -->
+      <text x="${padding}" y="18" fill="${themeConfig.titleColor}" 
+            font-size="15" font-weight="700" 
             ${themeConfig.glow ? 'filter="url(#glow)"' : ''}>
         ${safeTitle}
       </text>
 
-      <!-- Repo + PR number with icon -->
-      <text x="${padding}" y="29" fill="${themeConfig.subtitleColor}" 
-            font-size="11" font-weight="400">
+      <!-- Repo + PR number with better positioning -->
+      <text x="${padding}" y="32" fill="${themeConfig.subtitleColor}" 
+            font-size="12" font-weight="500">
         📁 ${repo} ${number}
       </text>
 
@@ -162,13 +162,13 @@ export default function handler(req, res) {
             fill="${themeConfig.gradient ? 'url(#statusGrad)' : statusInfo.color}"
             ${themeConfig.glow ? 'filter="url(#glow)"' : ''}/>
       
-      <!-- Status icon -->
-      <text x="${leftWidth + 15}" y="20" fill="#ffffff" font-size="12" font-weight="600">
+      <!-- Status icon with better positioning -->
+      <text x="${leftWidth + 18}" y="22" fill="#ffffff" font-size="14" font-weight="600">
         ${statusInfo.icon}
       </text>
       
-      <!-- Status text -->
-      <text x="${leftWidth + 32}" y="20" fill="#ffffff" font-size="12" font-weight="600">
+      <!-- Status text with larger font -->
+      <text x="${leftWidth + 38}" y="22" fill="#ffffff" font-size="13" font-weight="700">
         ${statusInfo.label}
       </text>
 
@@ -177,12 +177,12 @@ export default function handler(req, res) {
             fill="${themeConfig.dateBg}" 
             rx="${themeConfig.borderRadius}" ry="${themeConfig.borderRadius}"/>
       
-      <!-- Calendar icon -->
-      <text x="${leftWidth + statusWidth + 12}" y="16" fill="${themeConfig.dateColor}" font-size="10">📅</text>
+      <!-- Calendar icon with better positioning -->
+      <text x="${leftWidth + statusWidth + 16}" y="18" fill="${themeConfig.dateColor}" font-size="12">📅</text>
       
-      <!-- Date text -->
-      <text x="${leftWidth + statusWidth + dateWidth / 2}" y="26" 
-            fill="${themeConfig.dateColor}" font-size="11" font-weight="500" text-anchor="middle">
+      <!-- Date text with larger font -->
+      <text x="${leftWidth + statusWidth + dateWidth / 2}" y="28" 
+            fill="${themeConfig.dateColor}" font-size="12" font-weight="600" text-anchor="middle">
         ${date}
       </text>
 
