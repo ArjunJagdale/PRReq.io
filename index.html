@@ -87,18 +87,16 @@
               <span class="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
               Live Preview
             </h3>
-            <!-- Fixed preview container with proper overflow handling -->
-            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 min-h-[120px] flex items-center justify-start overflow-x-auto w-full">
-              <div class="flex justify-center w-full min-w-0">
-                <img id="badge-preview" 
-                     class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 max-w-none" 
-                     src="/api/badge?title=Add%20amazing%20new%20feature&repo=owner/repo&number=%231234&status=OPEN&date=Jul%2028&theme=modern" 
-                     alt="PR Badge Preview"
-                     style="height: 60px; width: auto;"/>
-              </div>
+            <!-- Responsive preview container that fits the badge -->
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 min-h-[120px] flex items-center justify-center w-full">
+              <img id="badge-preview" 
+                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 max-w-full h-auto" 
+                   src="/api/badge?title=Add%20amazing%20new%20feature&repo=owner/repo&number=%231234&status=OPEN&date=Jul%2028&theme=modern" 
+                   alt="PR Badge Preview"
+                   style="height: auto; max-height: 80px;"/>
             </div>
             <!-- Preview size info -->
-            <p class="text-xs text-gray-400 mt-2">Badge scales automatically with content length</p>
+            <p class="text-xs text-gray-400 mt-2">Badge automatically resizes to fit preview</p>
           </div>
 
           <!-- Quick Actions -->
