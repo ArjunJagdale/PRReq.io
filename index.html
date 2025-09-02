@@ -53,7 +53,43 @@
 
       <!-- Badge Preview -->
       <div class="flex items-center justify-center w-full">
-        <img id="badge-preview" src="" alt="PR Badge" class="rounded-xl shadow-lg border border-gray-700" />
+        <div class="relative w-full" id="badge-container">
+
+          <!-- Green underlay -->
+          <div class="absolute inset-1 bg-green-500 rounded-2xl -z-10 animate-pulse"></div>
+
+          <!-- Badge -->
+          <div class="relative flex items-center justify-between px-6 py-4 rounded-2xl 
+                      bg-gradient-to-r from-gray-900 to-gray-700 border border-gray-600">
+            
+            <!-- Title + Repo -->
+            <div class="flex-1 min-w-[300px]">
+              <h3 id="badge-title" class="text-white font-semibold text-sm overflow-hidden text-ellipsis">
+                refactor(config): replace get_empty_str_list with CONSTANT.copy
+              </h3>
+              <p id="badge-repo" class="text-gray-300 text-xs">
+                huggingface/dataset-viewer
+              </p>
+            </div>
+
+            <!-- PR Number -->
+            <div id="badge-number" class="ml-6 text-gray-200 font-bold text-sm whitespace-nowrap">
+              #3204
+            </div>
+
+            <!-- Status + Date -->
+            <div class="ml-6 flex items-center space-x-3">
+              <span id="badge-status"
+                class="px-3 py-1 rounded-md text-sm font-bold bg-green-500 text-white shadow-md whitespace-nowrap">
+                OPEN
+              </span>
+              <span id="badge-date"
+                class="px-3 py-1 rounded-md text-sm font-semibold bg-gray-700 text-gray-300 whitespace-nowrap">
+                Jul 1
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -69,8 +105,19 @@
     <!-- Script -->
     <script>
       const form = document.getElementById("badge-form");
-      const badgePreview = document.getElementById("badge-preview");
+      const badgeTitle = document.getElementById("badge-title");
+      const badgeRepo = document.getElementById("badge-repo");
+      const badgeNumber = document.getElementById("badge-number");
+      const badgeStatus = document.getElementById("badge-status");
+      const badgeDate = document.getElementById("badge-date");
+
       const outputGithub = document.getElementById("output-github");
+
+      const statusColors = {
+        OPEN: "bg-green-500",
+        MERGED: "bg-purple-500",
+        CLOSED: "bg-red-500"
+      };
 
       form.addEventListener("input", () => {
         const title = document.getElementById("title").value || "Default PR Title";
@@ -79,17 +126,22 @@
         const status = document.getElementById("status").value || "OPEN";
         const date = document.getElementById("date").value || "Today";
 
-        // Badge API URL
-        const badgeUrl = `http://localhost:3000/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
+        // Update badge preview
+        badgeTitle.textContent = title;
+        badgeRepo.textContent = repo;
+        badgeNumber.textContent = number;
+        badgeStatus.textContent = status;
+        badgeStatus.className = `px-3 py-1 rounded-md text-sm font-bold text-white shadow-md whitespace-nowrap ${statusColors[status]}`;
+        badgeDate.textContent = date;
 
-        // PR link
+        // Build API badge URL
+        const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
+
+        // GitHub PR link (strip "#" from number)
         const prNumberOnly = number.replace("#", "");
         const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
 
-        // Update preview
-        badgePreview.src = badgeUrl;
-
-        // Markdown embed
+        // Markd own embed code (clickable)
         outputGithub.textContent = `[![${title} ${number}](${badgeUrl})](${prLink})`;
       });
     </script>
