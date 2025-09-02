@@ -1,103 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PR Badge Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white flex flex-col items-center justify-center p-6">
-    
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full max-w-7xl">
-      
-      <!-- Form Section -->
-      <div class="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 class="text-xl font-bold mb-6">Edit PR Badge</h2>
-        
-        <form id="badge-form" class="space-y-5">
-          <div>
-            <label for="title" class="block text-sm font-medium mb-1">PR Title</label>
-            <input id="title" type="text" maxlength="120" placeholder="Enter PR Title"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
-          </div>
+import express from "express";
+const app = express();
+const PORT = 3000;
 
-          <div>
-            <label for="repo" class="block text-sm font-medium mb-1">Repository</label>
-            <input id="repo" type="text" maxlength="50" placeholder="owner/repo"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
-          </div>
+// Status colors
+const statusColors = {
+  OPEN: "#22c55e",   // green-500
+  MERGED: "#a855f7", // purple-500
+  CLOSED: "#ef4444", // red-500
+};
 
-          <div>
-            <label for="number" class="block text-sm font-medium mb-1">PR Number</label>
-            <input id="number" type="text" maxlength="15" placeholder="#1234"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
-          </div>
+app.get("/api/badge", (req, res) => {
+  const {
+    title = "Default PR Title",
+    repo = "owner/repo",
+    number = "#0000",
+    status = "OPEN",
+    date = "Today",
+  } = req.query;
 
-          <div>
-            <label for="status" class="block text-sm font-medium mb-1">Status</label>
-            <select id="status"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none">
-              <option>OPEN</option>
-              <option>MERGED</option>
-              <option>CLOSED</option>
-            </select>
-          </div>
+  // Dimensions
+  const height = 28;
+  const leftWidth = 250; // title+repo+number
+  const statusWidth = 80;
+  const dateWidth = 80;
+  const totalWidth = leftWidth + statusWidth + dateWidth;
 
-          <div>
-            <label for="date" class="block text-sm font-medium mb-1">Date</label>
-            <input id="date" type="text" maxlength="20" placeholder="Jul 1"
-              class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"/>
-          </div>
-        </form>
-      </div>
+  // Build SVG manually
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img">
+      <!-- Left side -->
+      <rect x="0" y="0" width="${leftWidth}" height="${height}" fill="#374151" rx="6" ry="6"/>
+      <text x="10" y="18" fill="#ffffff" font-family="Arial, sans-serif" font-size="13">${title}</text>
+      <text x="10" y="26" fill="#9ca3af" font-family="Arial, sans-serif" font-size="11">${repo} ${number}</text>
 
-      <!-- Badge Preview -->
-      <div class="flex items-center justify-center w-full">
-        <div class="relative w-full flex flex-col items-center space-y-4">
-          <!-- Live Badge Preview -->
-          <img id="badge-preview" 
-               src="https://pr-req-io.vercel.app/api/badge?title=Default%20PR%20Title&repo=owner/repo&number=%230000&status=OPEN&date=Today" 
-               alt="PR Badge" 
-               class="shadow-lg rounded-lg border border-gray-700"/>
-        </div>
-      </div>
-    </div>
+      <!-- Status -->
+      <rect x="${leftWidth}" y="0" width="${statusWidth}" height="${height}" fill="${statusColors[status] || "#22c55e"}"/>
+      <text x="${leftWidth + statusWidth / 2}" y="18" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">${status}</text>
 
-    <!-- Output Section -->
-    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl mt-10 w-full max-w-5xl">
-      <h2 class="text-xl font-bold mb-4">Output</h2>
-      <div>
-        <h3 class="text-sm font-semibold text-gray-300 mb-1">Markdown Badge Embed</h3>
-        <pre id="output-github" class="bg-gray-900 p-3 rounded-lg text-green-400 text-sm overflow-x-auto">...</pre>
-      </div>
-    </div>
+      <!-- Date -->
+      <rect x="${leftWidth + statusWidth}" y="0" width="${dateWidth}" height="${height}" fill="#111827" rx="6" ry="6"/>
+      <text x="${leftWidth + statusWidth + dateWidth / 2}" y="18" fill="#9ca3af" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">${date}</text>
+    </svg>
+  `;
 
-    <!-- Script -->
-    <script>
-      const form = document.getElementById("badge-form");
-      const outputGithub = document.getElementById("output-github");
-      const badgePreview = document.getElementById("badge-preview");
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.send(svg);
+});
 
-      form.addEventListener("input", () => {
-        const title = document.getElementById("title").value || "Default PR Title";
-        const repo = document.getElementById("repo").value || "owner/repo";
-        const number = document.getElementById("number").value || "#0000";
-        const status = document.getElementById("status").value || "OPEN";
-        const date = document.getElementById("date").value || "Today";
-
-        // Build API badge URL
-        const badgeUrl = `https://pr-req-io.vercel.app/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
-
-        // Update live preview
-        badgePreview.src = badgeUrl;
-
-        // GitHub PR link (strip "#" from number)
-        const prNumberOnly = number.replace("#", "");
-        const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
-
-        // Markdown embed code (clickable badge)
-        outputGithub.textContent = `[![${title} ${number}](${badgeUrl})](${prLink})`;
-      });
-    </script>
-  </body>
-</html>
+app.listen(PORT, () => {
+  console.log(`Badge generator running on http://localhost:${PORT}`);
+});
