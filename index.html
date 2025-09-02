@@ -83,15 +83,16 @@
         <!-- Preview Section -->
         <div class="flex flex-col items-center justify-center space-y-8">
           <div class="text-center">
-            <h3 class="text-2xl font-bold mb-4 flex items-center justify-center">
+            <h3 class="text-2xl font-bold mb-6 flex items-center justify-center">
               <span class="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
               Live Preview
             </h3>
-            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-12 border border-white/10 min-h-[200px] flex items-center justify-center">
               <img id="badge-preview" 
-                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105" 
+                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105 w-full max-w-4xl" 
                    src="/api/badge?title=Add%20amazing%20new%20feature&repo=owner/repo&number=%231234&status=OPEN&date=Jul%2028&theme=modern" 
-                   alt="PR Badge Preview"/>
+                   alt="PR Badge Preview"
+                   style="min-width: 600px;"/>
             </div>
           </div>
 
