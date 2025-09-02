@@ -22,7 +22,7 @@ export default function handler(req, res) {
   // Calculate left section width dynamically, but with a hard cap
   const textBase = 200;
   const extraWidth = Math.min(title.length * 6, 260);
-  const leftWidth = Math.min(textBase + extraWidth, 450); // cap at 450px
+  const leftWidth = Math.min(textBase + extraWidth, 650); // cap at 450px
   const totalWidth = leftWidth + statusWidth + dateWidth;
 
   // Max title characters allowed (approximation based on width)
