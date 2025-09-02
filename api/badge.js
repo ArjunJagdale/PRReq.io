@@ -63,12 +63,12 @@ export default function handler(req, res) {
   const themeConfig = themes[theme] || themes.modern;
   const statusInfo = statusConfig[status] || statusConfig.OPEN;
 
-  // Constants for larger badge
-  const height = 40;
-  const padding = 16;
-  const statusWidth = 120;
-  const dateWidth = 100;
-  const iconSize = 14;
+  // Constants for larger, taller badge
+  const height = 60; // Much taller for more spacious look
+  const padding = 20;
+  const statusWidth = 130;
+  const dateWidth = 110;
+  const iconSize = 16;
 
   // Title logic with better truncation for larger badge
   const maxTitleLength = 120;
@@ -145,15 +145,15 @@ export default function handler(req, res) {
             rx="${themeConfig.borderRadius}" ry="${themeConfig.borderRadius}"/>
 
       <!-- PR Title with larger, more prominent text -->
-      <text x="${padding}" y="18" fill="${themeConfig.titleColor}" 
-            font-size="15" font-weight="700" 
+      <text x="${padding}" y="25" fill="${themeConfig.titleColor}" 
+            font-size="16" font-weight="700" 
             ${themeConfig.glow ? 'filter="url(#glow)"' : ''}>
         ${safeTitle}
       </text>
 
       <!-- Repo + PR number with better positioning -->
-      <text x="${padding}" y="32" fill="${themeConfig.subtitleColor}" 
-            font-size="12" font-weight="500">
+      <text x="${padding}" y="45" fill="${themeConfig.subtitleColor}" 
+            font-size="13" font-weight="500">
         📁 ${repo} ${number}
       </text>
 
@@ -163,12 +163,12 @@ export default function handler(req, res) {
             ${themeConfig.glow ? 'filter="url(#glow)"' : ''}/>
       
       <!-- Status icon with better positioning -->
-      <text x="${leftWidth + 18}" y="22" fill="#ffffff" font-size="14" font-weight="600">
+      <text x="${leftWidth + 20}" y="32" fill="#ffffff" font-size="16" font-weight="600">
         ${statusInfo.icon}
       </text>
       
       <!-- Status text with larger font -->
-      <text x="${leftWidth + 38}" y="22" fill="#ffffff" font-size="13" font-weight="700">
+      <text x="${leftWidth + 45}" y="32" fill="#ffffff" font-size="14" font-weight="700">
         ${statusInfo.label}
       </text>
 
@@ -177,12 +177,9 @@ export default function handler(req, res) {
             fill="${themeConfig.dateBg}" 
             rx="${themeConfig.borderRadius}" ry="${themeConfig.borderRadius}"/>
       
-      <!-- Calendar icon with better positioning -->
-      <text x="${leftWidth + statusWidth + 16}" y="18" fill="${themeConfig.dateColor}" font-size="12">📅</text>
-      
-      <!-- Date text with larger font -->
-      <text x="${leftWidth + statusWidth + dateWidth / 2}" y="28" 
-            fill="${themeConfig.dateColor}" font-size="12" font-weight="600" text-anchor="middle">
+      <!-- Date text without calendar emoji, centered and larger -->
+      <text x="${leftWidth + statusWidth + dateWidth / 2}" y="32" 
+            fill="${themeConfig.dateColor}" font-size="14" font-weight="600" text-anchor="middle">
         ${date}
       </text>
 
