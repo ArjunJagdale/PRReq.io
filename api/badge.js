@@ -114,7 +114,7 @@ export default function handler(req, res) {
 
   // Build SVG
   const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img" aria-label="PR Badge">
+<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img" aria-label="Pull Request Badge">
   ${createDefs()}
   
   <!-- Main container -->
