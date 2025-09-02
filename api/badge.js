@@ -13,25 +13,27 @@ export default function handler(req, res) {
     date = "Today",
   } = req.query;
 
-  // Layout constants
+  // --- Constants ---
   const height = 32;
   const padding = 10;
   const statusWidth = 90;
   const dateWidth = 80;
 
-  // Calculate left section width dynamically, but with a hard cap
-  const textBase = 200;
-  const extraWidth = Math.min(title.length * 6, 260);
-  const leftWidth = Math.min(textBase + extraWidth, 650); // cap at 450px
-  const totalWidth = leftWidth + statusWidth + dateWidth;
-
-  // Max title characters allowed (approximation based on width)
-  const maxChars = Math.floor((leftWidth - padding * 2) / 7);
+  // --- Title logic with 100 char cap ---
+  const maxTitleLength = 100;
   let safeTitle = title;
-  if (title.length > maxChars) {
-    safeTitle = title.slice(0, maxChars - 1) + "…";
+  if (title.length > maxTitleLength) {
+    safeTitle = title.slice(0, maxTitleLength - 1) + "…";
   }
 
+  // --- Dynamic width calculation ---
+  const charWidth = 6.5; // avg width per char in px
+  const baseWidth = 200;
+  const extraWidth = Math.min(safeTitle.length * charWidth, 400);
+  const leftWidth = Math.min(baseWidth + extraWidth, 600); // max 600px for title area
+  const totalWidth = leftWidth + statusWidth + dateWidth;
+
+  // --- SVG badge ---
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img"
          font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
@@ -39,10 +41,10 @@ export default function handler(req, res) {
       <rect x="0" y="0" width="${leftWidth}" height="${height}" fill="#374151" rx="6" ry="6"/>
 
       <!-- PR Title -->
-      <text x="${padding}" y="15" fill="#ffffff" font-size="12" font-weight="500">${safeTitle}</text>
+      <text x="${padding}" y="15" fill="#ffffff" font-size="11.5" font-weight="500">${safeTitle}</text>
 
       <!-- Repo + PR number -->
-      <text x="${padding}" y="28" fill="#d1d5db" font-size="11">${repo} ${number}</text>
+      <text x="${padding}" y="28" fill="#d1d5db" font-size="10.5">${repo} ${number}</text>
 
       <!-- Status box -->
       <rect x="${leftWidth}" y="0" width="${statusWidth}" height="${height}" fill="${statusColors[status] || "#22c55e"}"/>
