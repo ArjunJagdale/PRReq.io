@@ -19,19 +19,17 @@ export default function handler(req, res) {
   const statusWidth = 90;
   const dateWidth = 80;
 
-  // Calculate left section width dynamically
+  // Calculate left section width dynamically, but with a hard cap
   const textBase = 200;
   const extraWidth = Math.min(title.length * 6, 260);
-  const leftWidth = textBase + extraWidth;
+  const leftWidth = Math.min(textBase + extraWidth, 450); // cap at 450px
   const totalWidth = leftWidth + statusWidth + dateWidth;
 
-  // Max title width inside left box
-  const maxTitleWidth = leftWidth - padding * 2;
-
-  // If title too long, truncate
+  // Max title characters allowed (approximation based on width)
+  const maxChars = Math.floor((leftWidth - padding * 2) / 7);
   let safeTitle = title;
-  if (title.length * 6.5 > maxTitleWidth) {
-    safeTitle = title.slice(0, Math.floor(maxTitleWidth / 7) - 1) + "…";
+  if (title.length > maxChars) {
+    safeTitle = title.slice(0, maxChars - 1) + "…";
   }
 
   const svg = `
@@ -41,8 +39,7 @@ export default function handler(req, res) {
       <rect x="0" y="0" width="${leftWidth}" height="${height}" fill="#374151" rx="6" ry="6"/>
 
       <!-- PR Title -->
-      <text x="${padding}" y="15" fill="#ffffff" font-size="12" font-weight="500"
-            textLength="${maxTitleWidth}" lengthAdjust="spacingAndGlyphs">${safeTitle}</text>
+      <text x="${padding}" y="15" fill="#ffffff" font-size="12" font-weight="500">${safeTitle}</text>
 
       <!-- Repo + PR number -->
       <text x="${padding}" y="28" fill="#d1d5db" font-size="11">${repo} ${number}</text>
