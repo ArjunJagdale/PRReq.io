@@ -1,220 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enhanced PR Badge Generator</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Badge Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .badge-container { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glow { filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4)); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
     
     <!-- Hero Section -->
     <div class="flex flex-col items-center justify-center px-6 py-12">
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-          PR Badge Generator
-        </h1>
-        <p class="text-gray-300 text-lg">Create beautiful, professional badges for your GitHub pull requests</p>
-      </div>
-
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full max-w-7xl">
-        
-        <!-- Form Section -->
-        <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/20">
-          <h2 class="text-2xl font-bold mb-8 flex items-center">
-            <span class="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
-            Configure Your Badge
-          </h2>
-          
-          <form id="badge-form" class="space-y-6">
-            <div class="space-y-2">
-              <label for="title" class="block text-sm font-semibold text-purple-200">PR Title</label>
-              <input id="title" type="text" maxlength="120" placeholder="Add amazing new feature"
-                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <label for="repo" class="block text-sm font-semibold text-purple-200">Repository</label>
-                <input id="repo" type="text" maxlength="50" placeholder="owner/repo"
-                  class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
-              </div>
-              
-              <div class="space-y-2">
-                <label for="number" class="block text-sm font-semibold text-purple-200">PR Number</label>
-                <input id="number" type="text" maxlength="15" placeholder="#1234"
-                  class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <label for="status" class="block text-sm font-semibold text-purple-200">Status</label>
-                <select id="status"
-                  class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
-                  <option value="OPEN">🟢 Open</option>
-                  <option value="MERGED">🟣 Merged</option>
-                  <option value="CLOSED">🔴 Closed</option>
-                  <option value="DRAFT">📝 Draft</option>
-                </select>
-              </div>
-              
-              <div class="space-y-2">
-                <label for="date" class="block text-sm font-semibold text-purple-200">Date</label>
-                <input id="date" type="text" maxlength="20" placeholder="Jul 28"
-                  class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
-              </div>
-            </div>
-
-            <!-- Theme Selection -->
-            <div class="space-y-2">
-              <label for="theme" class="block text-sm font-semibold text-purple-200">Theme</label>
-              <select id="theme"
-                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
-                <option value="modern">Modern (Default)</option>
-                <option value="github">GitHub Style</option>
-                <option value="minimal">Minimal</option>
-                <option value="neon">Neon Glow</option>
-              </select>
-            </div>
-          </form>
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                PR Badge Generator
+            </h1>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                Create stunning, professional badges for your GitHub pull requests. No external dependencies - pure SVG generation.
+            </p>
         </div>
 
-        <!-- Preview Section -->
-        <div class="flex flex-col items-center justify-center space-y-8">
-          <div class="text-center">
-            <h3 class="text-2xl font-bold mb-6 flex items-center justify-center">
-              <span class="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
-              Live Preview
-            </h3>
-            <!-- Flexible preview container that expands with badge -->
-            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 min-h-[120px] flex items-center justify-center overflow-x-auto">
-              <img id="badge-preview" 
-                   class="rounded-lg shadow-2xl transition-all duration-300 hover:scale-105" 
-                   src="/api/badge?title=Add%20amazing%20new%20feature&repo=owner/repo&number=%231234&status=OPEN&date=Jul%2028&theme=modern" 
-                   alt="PR Badge Preview"
-                   style="height: 60px; min-width: 400px;"/>
-            </div>
-            <!-- Preview size info -->
-            <p class="text-xs text-gray-400 mt-2">Scroll horizontally for long badges</p>
-          </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full max-w-7xl">
+            
+            <!-- Form Section -->
+            <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/20">
+                <h2 class="text-2xl font-bold mb-8 flex items-center">
+                    <span class="w-3 h-3 bg-purple-400 rounded-full mr-3 animate-pulse"></span>
+                    Configure Your Badge
+                </h2>
+                
+                <form id="badge-form" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="title" class="block text-sm font-semibold text-purple-200">PR Title</label>
+                        <input id="title" type="text" maxlength="100" placeholder="Add amazing new feature" value="Add amazing new feature"
+                            class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
+                    </div>
 
-          <!-- Quick Actions -->
-          <div class="flex gap-4">
-            <button id="copy-btn" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
-              📋 Copy Markdown
-            </button>
-            <button id="download-btn" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
-              💾 Download SVG
-            </button>
-          </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="repo" class="block text-sm font-semibold text-purple-200">Repository</label>
+                            <input id="repo" type="text" maxlength="50" placeholder="owner/repo" value="owner/repo"
+                                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="number" class="block text-sm font-semibold text-purple-200">PR Number</label>
+                            <input id="number" type="text" maxlength="10" placeholder="1234" value="1234"
+                                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="status" class="block text-sm font-semibold text-purple-200">Status</label>
+                            <select id="status"
+                                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
+                                <option value="open">🟢 Open</option>
+                                <option value="merged">🟣 Merged</option>
+                                <option value="closed">🔴 Closed</option>
+                                <option value="draft">📝 Draft</option>
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="author" class="block text-sm font-semibold text-purple-200">Author</label>
+                            <input id="author" type="text" maxlength="30" placeholder="username" value="dev"
+                                class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"/>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="theme" class="block text-sm font-semibold text-purple-200">Theme</label>
+                        <select id="theme"
+                            class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
+                            <option value="modern">✨ Modern</option>
+                            <option value="github">🐙 GitHub Style</option>
+                            <option value="minimal">⚡ Minimal</option>
+                            <option value="neon">🌈 Neon Glow</option>
+                            <option value="dark">🌙 Dark Mode</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="flex flex-col items-center justify-center space-y-8">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center justify-center">
+                        <span class="w-3 h-3 bg-pink-400 rounded-full mr-3 animate-pulse"></span>
+                        Live Preview
+                    </h3>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 min-h-[140px] flex items-center justify-center overflow-x-auto">
+                        <div id="badge-preview" class="transition-all duration-300 hover:scale-105"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-3">✨ Real-time SVG generation</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button id="copy-markdown" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        📋 Copy Markdown
+                    </button>
+                    <button id="copy-html" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        🔗 Copy HTML
+                    </button>
+                    <button id="download-svg" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        💾 Download SVG
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Output Section -->
     <div class="flex justify-center w-full px-6 pb-12">
-      <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/20 w-full max-w-7xl">
-        <h2 class="text-2xl font-bold mb-6 flex items-center">
-          <span class="w-2 h-2 bg-green-400 rounded-full mr-3"></span>
-          Markdown Output
-        </h2>
-        
-        <div class="space-y-4">
-          <div>
-            <h3 class="text-sm font-semibold text-green-200 mb-2">📝 Badge with Link</h3>
-            <div class="bg-black/30 p-4 rounded-xl border border-white/10">
-              <pre id="output-github" class="text-green-300 text-sm overflow-x-auto font-mono">...</pre>
+        <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/20 w-full max-w-7xl">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="w-3 h-3 bg-green-400 rounded-full mr-3 animate-pulse"></span>
+                Generated Code
+            </h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-sm font-semibold text-green-200 mb-3 flex items-center">
+                        📝 Markdown (for README.md)
+                        <button id="copy-md-btn" class="ml-2 px-2 py-1 text-xs bg-green-600 hover:bg-green-700 rounded-md transition-colors">Copy</button>
+                    </h3>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                        <pre id="markdown-output" class="text-green-300 text-sm overflow-x-auto font-mono whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-200 mb-3 flex items-center">
+                        🌐 HTML (for websites)
+                        <button id="copy-html-btn" class="ml-2 px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">Copy</button>
+                    </h3>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                        <pre id="html-output" class="text-blue-300 text-sm overflow-x-auto font-mono whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-semibold text-purple-200 mb-3 flex items-center">
+                        🎨 Direct SVG Code
+                        <button id="copy-svg-btn" class="ml-2 px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 rounded-md transition-colors">Copy</button>
+                    </h3>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/10 max-h-40 overflow-y-auto">
+                        <pre id="svg-output" class="text-purple-300 text-xs overflow-x-auto font-mono whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
             </div>
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-semibold text-blue-200 mb-2">🔗 Direct Badge URL</h3>
-            <div class="bg-black/30 p-4 rounded-xl border border-white/10">
-              <pre id="output-url" class="text-blue-300 text-sm overflow-x-auto font-mono">...</pre>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 
     <!-- Footer -->
-    <div class="text-center text-gray-400 py-8">
-      <p>Built with ❤️ for better GitHub workflows</p>
+    <div class="text-center text-gray-400 py-8 border-t border-white/10">
+        <p class="mb-2">🚀 Built with ❤️ for better GitHub workflows</p>
+        <p class="text-sm">Generate beautiful PR badges • No external dependencies • Pure SVG</p>
     </div>
 
-    <!-- Script -->
     <script>
-      const form = document.getElementById("badge-form");
-      const badgePreview = document.getElementById("badge-preview");
-      const outputGithub = document.getElementById("output-github");
-      const outputUrl = document.getElementById("output-url");
-      const copyBtn = document.getElementById("copy-btn");
-      const downloadBtn = document.getElementById("download-btn");
+        // Theme configurations
+        const themes = {
+            modern: {
+                titleBg: '#1e293b',
+                titleColor: '#ffffff',
+                subtitleColor: '#cbd5e1',
+                statusBg: '#334155',
+                infoBg: '#0f172a',
+                infoColor: '#94a3b8',
+                gradient: true,
+                shadow: true,
+                borderRadius: 8
+            },
+            github: {
+                titleBg: '#24292f',
+                titleColor: '#ffffff',
+                subtitleColor: '#8b949e',
+                statusBg: '#21262d',
+                infoBg: '#161b22',
+                infoColor: '#7d8590',
+                gradient: false,
+                shadow: false,
+                borderRadius: 6
+            },
+            minimal: {
+                titleBg: '#374151',
+                titleColor: '#f9fafb',
+                subtitleColor: '#d1d5db',
+                statusBg: '#4b5563',
+                infoBg: '#1f2937',
+                infoColor: '#9ca3af',
+                gradient: false,
+                shadow: false,
+                borderRadius: 4
+            },
+            neon: {
+                titleBg: '#0c0a1f',
+                titleColor: '#e879f9',
+                subtitleColor: '#c084fc',
+                statusBg: '#1e1b3a',
+                infoBg: '#2d1b4e',
+                infoColor: '#a78bfa',
+                gradient: true,
+                shadow: true,
+                borderRadius: 12,
+                glow: true
+            },
+            dark: {
+                titleBg: '#111827',
+                titleColor: '#f3f4f6',
+                subtitleColor: '#9ca3af',
+                statusBg: '#1f2937',
+                infoBg: '#030712',
+                infoColor: '#6b7280',
+                gradient: false,
+                shadow: true,
+                borderRadius: 6
+            }
+        };
 
-      // Your production domain (for README embedding)
-      const PROD_DOMAIN = "https://pr-req-io.vercel.app";
+        // Status configurations
+        const statusConfigs = {
+            open: { color: '#22c55e', icon: '●', label: 'OPEN' },
+            merged: { color: '#a855f7', icon: '✓', label: 'MERGED' },
+            closed: { color: '#ef4444', icon: '✕', label: 'CLOSED' },
+            draft: { color: '#f59e0b', icon: '◐', label: 'DRAFT' }
+        };
 
-      let currentMarkdown = "";
+        // DOM elements
+        const elements = {
+            form: document.getElementById('badge-form'),
+            preview: document.getElementById('badge-preview'),
+            markdownOutput: document.getElementById('markdown-output'),
+            htmlOutput: document.getElementById('html-output'),
+            svgOutput: document.getElementById('svg-output'),
+            copyMarkdown: document.getElementById('copy-markdown'),
+            copyHtml: document.getElementById('copy-html'),
+            downloadSvg: document.getElementById('download-svg'),
+            copyMdBtn: document.getElementById('copy-md-btn'),
+            copyHtmlBtn: document.getElementById('copy-html-btn'),
+            copySvgBtn: document.getElementById('copy-svg-btn')
+        };
 
-      function updateBadge() {
-        const title = document.getElementById("title").value || "Add amazing new feature";
-        const repo = document.getElementById("repo").value || "owner/repo";
-        const number = document.getElementById("number").value || "#1234";
-        const status = document.getElementById("status").value || "OPEN";
-        const date = document.getElementById("date").value || "Jul 28";
-        const theme = document.getElementById("theme").value || "modern";
-
-        // Build badge API URL (relative for preview)
-        const badgeUrl = `/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}&theme=${encodeURIComponent(theme)}`;
-
-        // Update live preview
-        badgePreview.src = badgeUrl;
-
-        // Build PR link
-        const prNumberOnly = number.replace("#", "");
-        const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
-
-        // Markdown embed code (absolute URL for GitHub README)
-        const badgeAbsoluteUrl = `${PROD_DOMAIN}${badgeUrl}`;
-        currentMarkdown = `[![${title} ${number}](${badgeAbsoluteUrl})](${prLink})`;
-        
-        outputGithub.textContent = currentMarkdown;
-        outputUrl.textContent = badgeAbsoluteUrl;
-      }
-
-      // Copy to clipboard functionality
-      copyBtn.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(currentMarkdown);
-          copyBtn.innerHTML = "✅ Copied!";
-          copyBtn.classList.add("bg-green-500");
-          setTimeout(() => {
-            copyBtn.innerHTML = "📋 Copy Markdown";
-            copyBtn.classList.remove("bg-green-500");
-          }, 2000);
-        } catch (err) {
-          console.error("Failed to copy:", err);
+        // Get form values
+        function getFormData() {
+            return {
+                title: document.getElementById('title').value || 'Add amazing new feature',
+                repo: document.getElementById('repo').value || 'owner/repo',
+                number: document.getElementById('number').value || '1234',
+                status: document.getElementById('status').value || 'open',
+                author: document.getElementById('author').value || 'dev',
+                theme: document.getElementById('theme').value || 'modern'
+            };
         }
-      });
 
-      // Download SVG functionality
-      downloadBtn.addEventListener("click", () => {
-        const title = document.getElementById("title").value || "Add amazing new feature";
-        const number = document.getElementById("number").value || "#1234";
-        const badgeUrl = badgePreview.src;
+        // Generate SVG badge
+        function generateSVG(data) {
+            const theme = themes[data.theme];
+            const statusConfig = statusConfigs[data.status];
+            
+            // Dimensions
+            const height = 60;
+            const padding = 16;
+            const statusWidth = 120;
+            const infoWidth = 100;
+            
+            // Calculate title width dynamically
+            const charWidth = 7.5;
+            const titleWidth = Math.max(300, data.title.length * charWidth + padding * 2);
+            const totalWidth = titleWidth + statusWidth + infoWidth;
+            
+            // Truncate title if too long
+            const maxTitleLength = 80;
+            const displayTitle = data.title.length > maxTitleLength ? 
+                data.title.substring(0, maxTitleLength - 1) + '…' : data.title;
+
+            // Create gradients and effects
+            const createDefs = () => {
+                let defs = '<defs>';
+                
+                if (theme.gradient) {
+                    defs += `
+                        <linearGradient id="titleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:${theme.titleBg};stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="statusGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:${statusConfig.color};stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#2d1b69;stop-opacity:1" />
+                        </linearGradient>`;
+                }
+                
+                if (theme.shadow) {
+                    defs += `
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+                        </filter>`;
+                }
+                
+                if (theme.glow) {
+                    defs += `
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>`;
+                }
+                
+                defs += '</defs>';
+                return defs;
+            };
+
+            return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img" aria-label="PR Badge">
+    ${createDefs()}
+    
+    <!-- Main container -->
+    <rect x="0" y="0" width="${totalWidth}" height="${height}" 
+          fill="${theme.titleBg}" 
+          rx="${theme.borderRadius}" ry="${theme.borderRadius}"
+          ${theme.shadow ? 'filter="url(#shadow)"' : ''}/>
+    
+    <!-- Title section -->
+    <rect x="0" y="0" width="${titleWidth}" height="${height}" 
+          fill="${theme.gradient ? 'url(#titleGrad)' : theme.titleBg}" 
+          rx="${theme.borderRadius}" ry="${theme.borderRadius}"/>
+    
+    <!-- PR Title -->
+    <text x="${padding}" y="22" fill="${theme.titleColor}" 
+          font-size="14" font-weight="700" font-family="Inter, sans-serif"
+          ${theme.glow ? 'filter="url(#glow)"' : ''}>
+        ${displayTitle}
+    </text>
+    
+    <!-- Repo and PR info -->
+    <text x="${padding}" y="40" fill="${theme.subtitleColor}" 
+          font-size="11" font-weight="500" font-family="Inter, sans-serif">
+        📂 ${data.repo} • #${data.number} • @${data.author}
+    </text>
+    
+    <!-- Status section -->
+    <rect x="${titleWidth}" y="0" width="${statusWidth}" height="${height}" 
+          fill="${theme.gradient ? 'url(#statusGrad)' : statusConfig.color}"
+          ${theme.glow ? 'filter="url(#glow)"' : ''}/>
+    
+    <text x="${titleWidth + 16}" y="32" fill="#ffffff" 
+          font-size="18" font-weight="600">${statusConfig.icon}</text>
+    <text x="${titleWidth + 40}" y="32" fill="#ffffff" 
+          font-size="12" font-weight="700" font-family="Inter, sans-serif">${statusConfig.label}</text>
+    
+    <!-- Info section -->
+    <rect x="${titleWidth + statusWidth}" y="0" width="${infoWidth}" height="${height}" 
+          fill="${theme.infoBg}" 
+          rx="${theme.borderRadius}" ry="${theme.borderRadius}"/>
+    
+    <text x="${titleWidth + statusWidth + infoWidth/2}" y="24" 
+          fill="${theme.infoColor}" font-size="10" font-weight="600" 
+          text-anchor="middle" font-family="Inter, sans-serif">PR</text>
+    <text x="${titleWidth + statusWidth + infoWidth/2}" y="38" 
+          fill="${theme.infoColor}" font-size="10" font-weight="600" 
+          text-anchor="middle" font-family="Inter, sans-serif">BADGE</text>
+    
+    <!-- Separators -->
+    <line x1="${titleWidth}" y1="6" x2="${titleWidth}" y2="${height-6}" 
+          stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    <line x1="${titleWidth + statusWidth}" y1="6" x2="${titleWidth + statusWidth}" y2="${height-6}" 
+          stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+</svg>`.trim();
+        }
+
+        // Update all outputs
+        function updateBadge() {
+            const data = getFormData();
+            const svgCode = generateSVG(data);
+            const prUrl = `https://github.com/${data.repo}/pull/${data.number}`;
+            const badgeDataUrl = `data:image/svg+xml;base64,${btoa(svgCode)}`;
+            
+            // Update preview
+            elements.preview.innerHTML = svgCode;
+            
+            // Update outputs
+            const markdownCode = `[![PR Badge](${badgeDataUrl})](${prUrl})`;
+            const htmlCode = `<a href="${prUrl}"><img src="${badgeDataUrl}" alt="PR Badge" /></a>`;
+            
+            elements.markdownOutput.textContent = markdownCode;
+            elements.htmlOutput.textContent = htmlCode;
+            elements.svgOutput.textContent = svgCode;
+        }
+
+        // Copy functionality
+        async function copyToClipboard(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.classList.add('bg-green-600');
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-600');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        }
+
+        // Download SVG
+        function downloadSVG() {
+            const data = getFormData();
+            const svgCode = generateSVG(data);
+            const blob = new Blob([svgCode], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pr-badge-${data.repo.replace('/', '-')}-${data.number}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        elements.form.addEventListener('input', updateBadge);
+
+        elements.copyMarkdown.addEventListener('click', () => 
+            copyToClipboard(elements.markdownOutput.textContent, elements.copyMarkdown));
         
-        const link = document.createElement('a');
-        link.href = badgeUrl;
-        link.download = `pr-badge-${title.replace(/[^a-zA-Z0-9]/g, '-')}-${number.replace('#', '')}.svg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
+        elements.copyHtml.addEventListener('click', () => 
+            copyToClipboard(elements.htmlOutput.textContent, elements.copyHtml));
+        
+        elements.downloadSvg.addEventListener('click', downloadSVG);
 
-      // Initialize and set up event listeners
-      form.addEventListener("input", updateBadge);
-      updateBadge(); // Initial load
+        elements.copyMdBtn.addEventListener('click', () => 
+            copyToClipboard(elements.markdownOutput.textContent, elements.copyMdBtn));
+        
+        elements.copyHtmlBtn.addEventListener('click', () => 
+            copyToClipboard(elements.htmlOutput.textContent, elements.copyHtmlBtn));
+        
+        elements.copySvgBtn.addEventListener('click', () => 
+            copyToClipboard(elements.svgOutput.textContent, elements.copySvgBtn));
+
+        // Initialize
+        updateBadge();
     </script>
-  </body>
+</body>
 </html>
