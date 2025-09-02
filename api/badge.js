@@ -1,7 +1,7 @@
 const statusColors = {
-  OPEN: "#22c55e",   // green
-  MERGED: "#a855f7", // purple
-  CLOSED: "#ef4444", // red
+  OPEN: "#22c55e",
+  MERGED: "#a855f7",
+  CLOSED: "#ef4444",
 };
 
 export default function handler(req, res) {
@@ -13,33 +13,35 @@ export default function handler(req, res) {
     date = "Today",
   } = req.query;
 
-  // Badge layout constants
+  // Layout constants
   const height = 32;
   const padding = 10;
-  const maxTitleLength = 35; // safe limit before truncation
   const statusWidth = 90;
   const dateWidth = 80;
 
-  // Truncate long titles with ellipsis
-  const safeTitle =
-    title.length > maxTitleLength
-      ? title.slice(0, maxTitleLength - 1) + "…"
-      : title;
-
-  // Calculate left width dynamically
-  const baseLeftWidth = 200;
-  const extraWidth = Math.min(title.length * 6, 200); // grow with title
-  const leftWidth = baseLeftWidth + extraWidth;
+  // Calculate left section width dynamically
+  const textBase = 200;
+  const extraWidth = Math.min(title.length * 6, 260);
+  const leftWidth = textBase + extraWidth;
   const totalWidth = leftWidth + statusWidth + dateWidth;
 
-  // SVG Badge
+  // Max title width inside left box (so it doesn’t overlap repo line)
+  const maxTitleWidth = leftWidth - padding * 2;
+
+  // If title too long, truncate
+  let safeTitle = title;
+  if (title.length * 7 > maxTitleWidth) {
+    safeTitle = title.slice(0, Math.floor(maxTitleWidth / 7) - 1) + "…";
+  }
+
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img" font-family="Segoe UI, Arial, sans-serif">
       <!-- Left background -->
       <rect x="0" y="0" width="${leftWidth}" height="${height}" fill="#374151" rx="6" ry="6"/>
 
-      <!-- PR title -->
-      <text x="${padding}" y="16" fill="#ffffff" font-size="13" font-weight="600" text-overflow="ellipsis">${safeTitle}</text>
+      <!-- PR Title (compressed to fit available space) -->
+      <text x="${padding}" y="16" fill="#ffffff" font-size="13" font-weight="600" 
+            textLength="${maxTitleWidth}" lengthAdjust="spacingAndGlyphs">${safeTitle}</text>
 
       <!-- Repo + PR number -->
       <text x="${padding}" y="28" fill="#d1d5db" font-size="11">${repo} ${number}</text>
