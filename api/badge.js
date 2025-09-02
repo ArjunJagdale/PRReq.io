@@ -1,9 +1,7 @@
-// api/badge.js (Vercel serverless function)
-
 const statusColors = {
-  OPEN: "#22c55e",   // green-500
-  MERGED: "#a855f7", // purple-500
-  CLOSED: "#ef4444", // red-500
+  OPEN: "#22c55e",   // green
+  MERGED: "#a855f7", // purple
+  CLOSED: "#ef4444", // red
 };
 
 export default function handler(req, res) {
@@ -15,25 +13,36 @@ export default function handler(req, res) {
     date = "Today",
   } = req.query;
 
-  // Badge dimensions
-  const height = 30;
+  // Badge layout constants
+  const height = 32;
   const padding = 10;
-  const leftWidth = 260;
+  const maxTitleLength = 35; // safe limit before truncation
   const statusWidth = 90;
-  const dateWidth = 90;
+  const dateWidth = 80;
+
+  // Truncate long titles with ellipsis
+  const safeTitle =
+    title.length > maxTitleLength
+      ? title.slice(0, maxTitleLength - 1) + "…"
+      : title;
+
+  // Calculate left width dynamically
+  const baseLeftWidth = 200;
+  const extraWidth = Math.min(title.length * 6, 200); // grow with title
+  const leftWidth = baseLeftWidth + extraWidth;
   const totalWidth = leftWidth + statusWidth + dateWidth;
 
-  // SVG badge
+  // SVG Badge
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" role="img" font-family="Segoe UI, Arial, sans-serif">
-      <!-- Background left -->
+      <!-- Left background -->
       <rect x="0" y="0" width="${leftWidth}" height="${height}" fill="#374151" rx="6" ry="6"/>
 
-      <!-- Title -->
-      <text x="${padding}" y="16" fill="#ffffff" font-size="13" font-weight="600">${title}</text>
+      <!-- PR title -->
+      <text x="${padding}" y="16" fill="#ffffff" font-size="13" font-weight="600" text-overflow="ellipsis">${safeTitle}</text>
 
-      <!-- Repo + Number -->
-      <text x="${padding}" y="26" fill="#d1d5db" font-size="11">${repo} ${number}</text>
+      <!-- Repo + PR number -->
+      <text x="${padding}" y="28" fill="#d1d5db" font-size="11">${repo} ${number}</text>
 
       <!-- Status box -->
       <rect x="${leftWidth}" y="0" width="${statusWidth}" height="${height}" fill="${statusColors[status] || "#22c55e"}"/>
