@@ -62,10 +62,10 @@
                             <label for="status" class="block text-sm font-semibold text-purple-200">Status</label>
                             <select id="status"
                                 class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
-                                <option value="open">🟢 Open</option>
-                                <option value="merged">🟣 Merged</option>
-                                <option value="closed">🔴 Closed</option>
-                                <option value="draft">📝 Draft</option>
+                                <option value="OPEN">🟢 Open</option>
+                                <option value="MERGED">🟣 Merged</option>
+                                <option value="CLOSED">🔴 Closed</option>
+                                <option value="DRAFT">📝 Draft</option>
                             </select>
                         </div>
                         
@@ -81,8 +81,6 @@
                         <select id="theme"
                             class="w-full px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer">
                             <option value="modern">✨ Modern</option>
-                            <option value="github">🐙 GitHub Style</option>
-                            <option value="minimal">⚡ Minimal</option>
                             <option value="neon">🌈 Neon Glow</option>
                             <option value="dark">🌙 Dark Mode</option>
                         </select>
@@ -230,10 +228,10 @@
 
         // Status configurations
         const statusConfigs = {
-            open: { color: '#22c55e', icon: '●', label: 'OPEN' },
-            merged: { color: '#a855f7', icon: '✓', label: 'MERGED' },
-            closed: { color: '#ef4444', icon: '✕', label: 'CLOSED' },
-            draft: { color: '#f59e0b', icon: '◐', label: 'DRAFT' }
+            OPEN: { color: '#22c55e', icon: '●', label: 'OPEN' },
+            MERGED: { color: '#a855f7', icon: '✓', label: 'MERGED' },
+            CLOSED: { color: '#ef4444', icon: '✕', label: 'CLOSED' },
+            DRAFT: { color: '#f59e0b', icon: '◐', label: 'DRAFT' }
         };
 
         // DOM elements
@@ -257,7 +255,7 @@
                 title: document.getElementById('title').value || 'Add amazing new feature',
                 repo: document.getElementById('repo').value || 'owner/repo',
                 number: document.getElementById('number').value || '1234',
-                status: document.getElementById('status').value || 'open',
+                status: document.getElementById('status').value || 'OPEN',
                 author: document.getElementById('author').value || 'dev',
                 theme: document.getElementById('theme').value || 'modern'
             };
