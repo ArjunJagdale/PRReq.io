@@ -383,16 +383,24 @@
         // Update all outputs
         function updateBadge() {
             const data = getFormData();
-            const svgCode = generateSVG(data);
-            const prUrl = `https://github.com/${data.repo}/pull/${data.number}`;
-            const badgeDataUrl = `data:image/svg+xml;base64,${btoa(svgCode)}`;
             
-            // Update preview
-            elements.preview.innerHTML = svgCode;
+            // Build API URL for badge
+            const apiUrl = `/api/badge?title=${encodeURIComponent(data.title)}&repo=${encodeURIComponent(data.repo)}&number=${encodeURIComponent(data.number)}&status=${encodeURIComponent(data.status)}&author=${encodeURIComponent(data.author)}&theme=${encodeURIComponent(data.theme)}`;
+            
+            // Production domain for markdown/html
+            const prodDomain = "https://pr-req-io.vercel.app";
+            const badgeUrl = `${prodDomain}${apiUrl}`;
+            const prUrl = `https://github.com/${data.repo}/pull/${data.number.replace('#', '')}`;
+            
+            // Update preview with API call
+            elements.preview.innerHTML = `<img src="${apiUrl}" alt="PR Badge" style="height: 60px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />`;
+            
+            // Generate SVG code for download
+            const svgCode = generateSVG(data);
             
             // Update outputs
-            const markdownCode = `[![PR Badge](${badgeDataUrl})](${prUrl})`;
-            const htmlCode = `<a href="${prUrl}"><img src="${badgeDataUrl}" alt="PR Badge" /></a>`;
+            const markdownCode = `[![${data.title}](${badgeUrl})](${prUrl})`;
+            const htmlCode = `<a href="${prUrl}"><img src="${badgeUrl}" alt="${data.title}" /></a>`;
             
             elements.markdownOutput.textContent = markdownCode;
             elements.htmlOutput.textContent = htmlCode;
