@@ -73,6 +73,9 @@
       const badgePreview = document.getElementById("badge-preview");
       const outputGithub = document.getElementById("output-github");
 
+      // Your production domain (for README embedding)
+      const PROD_DOMAIN = "https://pr-req-io.vercel.app";
+
       form.addEventListener("input", () => {
         const title = document.getElementById("title").value || "Default PR Title";
         const repo = document.getElementById("repo").value || "owner/repo";
@@ -80,7 +83,7 @@
         const status = document.getElementById("status").value || "OPEN";
         const date = document.getElementById("date").value || "Today";
 
-        // Build badge API URL
+        // Build badge API URL (relative for preview)
         const badgeUrl = `/api/badge?title=${encodeURIComponent(title)}&repo=${encodeURIComponent(repo)}&number=${encodeURIComponent(number)}&status=${encodeURIComponent(status)}&date=${encodeURIComponent(date)}`;
 
         // Update live preview
@@ -88,11 +91,4 @@
 
         // Build PR link
         const prNumberOnly = number.replace("#", "");
-        const prLink = `https://github.com/${repo}/pull/${prNumberOnly}`;
-
-        // Markdown embed code
-        outputGithub.textContent = `[![${title} ${number}](${badgeUrl})](${prLink})`;
-      });
-    </script>
-  </body>
-</html>
+        const prLink = `https://github.com/
