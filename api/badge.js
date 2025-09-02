@@ -16,26 +16,6 @@ const themes = {
     shadow: true,
     gradient: true
   },
-  github: {
-    titleBg: "#24292f",
-    titleColor: "#ffffff", 
-    subtitleColor: "#8b949e",
-    dateBg: "#161b22",
-    dateColor: "#7d8590",
-    borderRadius: "6",
-    shadow: false,
-    gradient: false
-  },
-  minimal: {
-    titleBg: "#374151",
-    titleColor: "#f9fafb",
-    subtitleColor: "#d1d5db",
-    dateBg: "#1f2937",
-    dateColor: "#9ca3af",
-    borderRadius: "4",
-    shadow: false,
-    gradient: false
-  },
   neon: {
     titleBg: "#0c0a1f",
     titleColor: "#e879f9",
