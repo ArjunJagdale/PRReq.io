@@ -12,7 +12,7 @@ const themes = {
     subtitleColor: "#cbd5e1",
     dateBg: "#0f172a",
     dateColor: "#94a3b8",
-    borderRadius: "8",
+    borderRadius: "6",
     shadow: true,
     gradient: true
   },
@@ -22,7 +22,7 @@ const themes = {
     subtitleColor: "#c084fc",
     dateBg: "#1e1b3a",
     dateColor: "#a78bfa",
-    borderRadius: "12",
+    borderRadius: "6",
     shadow: true,
     gradient: true,
     glow: true
